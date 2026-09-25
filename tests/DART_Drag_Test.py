@@ -10,19 +10,19 @@ x_motor = np.linspace(0.001, 0.099, 200)
 r_motor = (0.045 / 2) * np.sqrt(np.clip(1 - ((x_motor - 0.10 / 2) / (0.10 / 2))**2, 0, None))
 
 D_total, S_wet = DART_ClassI_Drag_Functions.estimate_total_drag(
-    tc_max_pylon=0.09,              
-    c_pylon=0.08,                   
-    b_pylon=0.12,                   
-    l_main_body=0.5,               
-    r_main_body=r_main, 
-    x_main_body=x_main, 
-    l_motor_housing=0.10,           
-    r_motor_housing=r_motor, 
-    x_motor_housing=x_motor, 
-    d_max_main_body=0.065,          
-    d_max_motor_housing=0.045,      
-    M_infty=0.57, 
-    k_wave_drag = 0.87                  
+    tc_max_pylon=0.09,              #thickness to chord              
+    c_pylon=0.08,                   #chord                 
+    b_pylon=0.12,                   #span           
+    l_main_body=0.5,                #main body length     
+    r_main_body=r_main,             #main body radius
+    x_main_body=x_main,             #running variable from 0 to main body length
+    l_motor_housing=0.10,           #motor housing length
+    r_motor_housing=r_motor,        #motor housing radius
+    x_motor_housing=x_motor,        #running variable from 0 to motor housing length
+    d_max_main_body=0.065,          #max diameter main body
+    d_max_motor_housing=0.045,      #maximum diameter motor housing
+    M_infty=0.57,                   #free stream mach number
+    k_wave_drag = 0.87              #roskam constant
 )
 
 print(f"Calculated Total Drag Force: {D_total:.2f} Newtons")

@@ -23,7 +23,7 @@ class Assumptions():
     def __init__(self):
         
         #Flight conditions
-        
+            # X flight or t flight
         #Structural properties
         
         #Engine parameters
