@@ -5,8 +5,10 @@ cycler==0.12.1
 dill==0.4.1
 fonttools==4.66.0
 kiwisolver==1.5.1
+llvmlite==0.49.0
 matplotlib==3.11.2
 neuralfoil==0.3.3
+numba==0.67.0
 numpy==2.5.3
 packaging==26.3
 pandas==3.0.6
