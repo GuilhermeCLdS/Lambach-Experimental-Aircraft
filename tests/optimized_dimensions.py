@@ -197,3 +197,4 @@ if use_diff_thrust:
     print(f"Delta T (top-bot): {dT:.3f} N  (top pair {(D + dT)/2:.2f} N, bottom pair {(D - dT)/2:.2f} N)")
     print(f"Thrust moment:     {sol.value(moment_thrust):.3e} N*m")
 print(f"Trim moment:       {sol.value(moment_about_cg):.2e} N*m")
+#

@@ -93,7 +93,7 @@ airplane = asb.Airplane(name="Quadcopter", xyz_ref=[0, 0, 0], wings=wing_list, f
 
 #axs = airplane.draw_three_view()
 
-airplane.draw(backend='plotly')
+#airplane.draw(backend='plotly')
 
 alpha = np.linspace(-15, 15, 300)
 
@@ -144,14 +144,16 @@ plt.tight_layout()
 plt.show()
 
 
-# vlm = asb.VortexLatticeMethod(
-#     airplane=airplane,
-#     op_point=asb.OperatingPoint(velocity=10, alpha=5),
-# )
+vlm = asb.VortexLatticeMethod(
+    airplane=airplane,
+    op_point=asb.OperatingPoint(velocity=10, alpha=5),
+)
 
-# vlm_aero = vlm.run()
+vlm_aero = vlm.run()
 
-# for key in ["CL", "CD", "Cm"]:
-#     print(f"{key:>2} = {vlm_aero[key]:8.4f}")
+for key in ["CL", "CD", "Cm"]:
+    print(f"{key:>2} = {vlm_aero[key]:8.4f}")
 
-# vlm.draw(draw_streamlines=True, recalculate_streamlines=True)
+vlm.draw(draw_streamlines=True, recalculate_streamlines=True)
+
+#

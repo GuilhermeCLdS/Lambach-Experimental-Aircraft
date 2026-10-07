@@ -37,3 +37,5 @@ v = M_infty * math.sqrt(gamma * R * T)  #freestream velocity
 q = 1/2 * rho * v**2  #dynamic pressure
 C_d = D_total/S_wet/q
 print ("C_d", C_d)
+
+#
