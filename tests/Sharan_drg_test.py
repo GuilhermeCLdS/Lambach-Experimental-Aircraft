@@ -56,6 +56,7 @@ pylons_top = aero_surface(name="pylons_top", span=0.15, root_chord=pylon_chord, 
 pylons_top_translated = pylons_top.translate([-fuse_length/2+wing_le, 0, 0])
 pylons_bottom = aero_surface(name="pylons_bottom", span=0.15, root_chord=pylon_chord, tip_chord=pylon_chord, twist=pylon_incidence, airfoil="naca0012", y_root = polar_to_cartesian(radius_from_ellipse(-fuse_length/2+wing_le, a, b), -np.pi/4)[0], z_root = polar_to_cartesian(radius_from_ellipse(-fuse_length/2+wing_le, a, b), -np.pi/4)[1], y_tip = polar_to_cartesian(radius_from_ellipse(-fuse_length/2+wing_le, a, b)+pylon_length, -np.pi/4)[0], z_tip = polar_to_cartesian(radius_from_ellipse(-fuse_length/2+wing_le, a, b)+pylon_length, -np.pi/4)[1])
 pylons_bottom_translated = pylons_bottom.translate([-fuse_length/2+wing_le, 0, 0]) 
+
 canards = aero_surface(name="canards", span=0.07, root_chord=canard_chord, tip_chord=canard_chord, twist=canard_incidence, airfoil="naca0012", y_root = polar_to_cartesian(radius_from_ellipse(-fuse_length/2+canard_le, a, b), 0)[0], z_root = polar_to_cartesian(radius_from_ellipse(-fuse_length/2+canard_le, a, b), 0)[1], y_tip = polar_to_cartesian(radius_from_ellipse(-fuse_length/2+canard_le, a, b)+canard_length, 0)[0], z_tip = polar_to_cartesian(radius_from_ellipse(-fuse_length/2+canard_le, a, b)+canard_length, 0)[1])
 canards_translated = canards.translate([-fuse_length/2+canard_le, 0, 0]) 
 
