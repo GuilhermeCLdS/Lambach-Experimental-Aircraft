@@ -14,9 +14,11 @@ Lambach-Experimental-Aircraft/
     ├── src/
     │   ├── global_parameters.py
     │   ├── <subfolder>/   e.g. drag_estimation, stability
-    │   │   ├── helpers/   small reusable functions
-    │   │   └── modules/   phases of the code (aerodynamic parameter
-    │   │                  prediction, plotter, ...)
+    │   │   ├── helpers/          small reusable functions
+    │   │   ├── modules/          phases of the code (aerodynamic parameter
+    │   │   │                     prediction, plotter, ...)
+    │   │   └── refactoring_wip/  temporary: files not yet split into one
+    │   │                         class/function per file
     │   └── deprecated/    old code kept for reference only
     └── tests/             mirrors src, but only one level deep
         └── <subfolder>/   test files sit directly here (no helpers/modules)
@@ -27,6 +29,7 @@ Lambach-Experimental-Aircraft/
 - **`main.py`** is the only place where modules are wired together. The final assembly of the code happens only in `main.py` of that version, never inside `src/`.
 - **One class or function per file.** Each file in `src/` contains exactly one class or one function, and the file is named after it.
 - **`tests/`** has the same subfolders as `src/` (for example `tests/drag_estimation/`), but no `helpers/` or `modules/` inside them.
+- **`refactoring_wip/`** (inside a `src` subfolder) holds existing code that still breaks the one-class-or-function-per-file rule. It is temporary: refactor the files into `helpers/` and `modules/`, then delete the folder.
 - **`deprecated/`** is not maintained and has no branch of its own.
 
 ## Branch workflow
