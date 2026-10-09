@@ -34,18 +34,25 @@ Lambach-Experimental-Aircraft/
 
 ## Branch workflow
 
-| Branch | Purpose |
-|---|---|
-| **One branch per `src` subfolder** (e.g. one for `drag_estimation`, one for `stability`) | All development for that subfolder happens here. `deprecated` is the only subfolder without a branch. |
-| **`dev`** | Tracks the current `Version_*`. It pulls (merges) the work from the subfolder branches, so it is where the integrated version is assembled and checked. |
-| **`main`** | Most recent stable version. Only the git admin touches it. |
+```
+main  <──  dev  <──  drag_estimation branch
+                <──  stability branch
+                <──  (one branch per src subfolder)
+```
 
-1. Work on your own subfolder branch. Do not commit aerodynamics, stability or other work straight to `main` or `dev`.
-2. When a piece of work is approved, it is merged into `dev`.
-3. When `dev` holds a stable version, the git admin pushes `dev` into `main`. `main` then always contains the latest stable version.
-4. After that, the admin clears `dev` and starts the next `Version_*` on it. The subfolder branches pull from `main` to stay up to date.
+| Branch | Purpose | Who pushes |
+|---|---|---|
+| **`main`** | Most recent stable version. | Only the system owner (git admin), and only by updating it from `dev`. |
+| **`dev`** | Tracks the current `Version_*`. It belongs to no one's day-to-day work: it only pulls (merges) from the subfolder branches, and is where the integrated version is assembled and checked. | Nobody commits to it directly. Merges from subfolder branches only. |
+| **One branch per `src` subfolder** (e.g. `drag_estimation`, `stability`; `deprecated` has none) | All development for that subfolder. These branches belong solely to `dev`: they are created from `dev` and only ever merge into `dev`, never into `main` or into each other. | Each contributor pushes only to their own subfolder branch. |
 
-Nobody except the git admin pushes to `main`.
+1. Create or update your subfolder branch from `dev`, and work there. Do not commit to `dev` or `main`.
+2. Push only to your own subfolder branch.
+3. When the work is approved, it is merged into `dev`. `dev` only receives merges from subfolder branches.
+4. When `dev` holds a stable version, the system owner updates `main` from `dev`. `main` then always contains the latest stable version.
+5. After that, the system owner clears `dev` and starts the next `Version_*` on it. The subfolder branches then sync from `dev`.
+
+Nobody except the system owner pushes to `main`.
 
 ## Setup
 
