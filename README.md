@@ -24,7 +24,8 @@ Lambach-Experimental-Aircraft/
 
 - **`helpers/`** holds small functions that modules call.
 - **`modules/`** holds the phases of the code.
-- **`main.py`** is the only place where modules are wired together.
+- **`main.py`** is the only place where modules are wired together. The final assembly of the code happens only in `main.py` of that version, never inside `src/`.
+- **One class or function per file.** Each file in `src/` contains exactly one class or one function, and the file is named after it.
 - **`tests/`** has the same subfolders as `src/` (for example `tests/drag_estimation/`), but no `helpers/` or `modules/` inside them.
 - **`deprecated/`** is not maintained and has no branch of its own.
 
