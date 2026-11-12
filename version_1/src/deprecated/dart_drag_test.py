@@ -1,5 +1,5 @@
 import numpy as np
-import DART_ClassI_Drag_Functions
+import dart_classi_drag_functions
 import math
 
 # A smooth, 200-point symmetric distribution
@@ -9,7 +9,7 @@ r_main = (0.075 / 2) * np.sqrt(np.clip(1 - ((x_main - 0.35 / 2) / (0.35 / 2))**2
 x_motor = np.linspace(0.001, 0.099, 200)
 r_motor = (0.045 / 2) * np.sqrt(np.clip(1 - ((x_motor - 0.10 / 2) / (0.10 / 2))**2, 0, None))
 
-D_total, S_wet = DART_ClassI_Drag_Functions.estimate_total_drag(
+D_total, S_wet = dart_classi_drag_functions.estimate_total_drag(
     tc_max_pylon=0.09,              
     c_pylon=0.08,                   
     b_pylon=0.12,                   
