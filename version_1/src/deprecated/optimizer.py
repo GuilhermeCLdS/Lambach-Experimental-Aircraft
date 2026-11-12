@@ -44,7 +44,8 @@ class Config:
         self.steady_level = True
 
         # --- propeller / powertrain ---
-        self.PERF_FILE = Path(__file__).resolve().parent / "PER3_5x37E-3_performance_file.txt"
+        # src/deprecated/ -> repository root -> data/
+        self.PERF_FILE = Path(__file__).resolve().parents[3] / "data" / "PER3_5x37E-3_performance_file.txt"
         self.prop_dia = 5 * 0.0254             # [m]
         self.rpm_min = 15000
         self.rpm_max = 44000

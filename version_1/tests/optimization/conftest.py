@@ -74,3 +74,46 @@ def legacy_baseline(legacy):
     optimizer = legacy.AircraftDesignOptimizer(legacy.Config())
     optimizer.sol = solve_quietly(optimizer.opti)
     return optimizer
+
+
+# ---------------------------------------------------------------------------
+# Refactored code (src/optimization)
+# ---------------------------------------------------------------------------
+
+def solve_refactored_case(overrides=None, rho=None):
+    """Build and solve the refactored optimizer with Assumptions overrides."""
+    from src.global_parameters.global_parameters import Assumptions, Parameters
+    from src.optimization.modules.aircraft_design_optimizer import AircraftDesignOptimizer
+    from src.optimization.modules.propeller_performance_database import PropellerPerformanceDatabase
+
+    assumptions = Assumptions()
+    for key, value in (overrides or {}).items():
+        setattr(assumptions, key, value)
+    prop_db = PropellerPerformanceDatabase(
+        assumptions.perf_file,
+        Parameters.AIR_DENSITY_SEA_LEVEL if rho is None else rho,
+        assumptions.prop_dia,
+        rpm_lo=assumptions.rpm_min,
+    )
+    optimizer = AircraftDesignOptimizer(assumptions, prop_db)
+    optimizer.solve(verbose=False)
+    return optimizer
+
+
+def refactored_results(optimizer):
+    """Same structure as reference_results.json, from the refactored optimizer."""
+    from make_reference_results import DESIGN_KEYS, OUTPUT_KEYS, PROPULSION_KEYS
+
+    v = optimizer.value
+    return {
+        "design": {k: v(getattr(optimizer.design, k)) for k in DESIGN_KEYS},
+        "outputs": {k: v(getattr(optimizer, k)) for k in OUTPUT_KEYS},
+        "propulsion": {k: v(getattr(optimizer.propulsion, k)) for k in PROPULSION_KEYS},
+        "weight": float(optimizer.assumptions.aircraft_weight),
+        "J_tab_max": float(optimizer.prop_db.J_tab_max),
+    }
+
+
+@pytest.fixture(scope="session")
+def refactored_baseline():
+    return solve_refactored_case()
