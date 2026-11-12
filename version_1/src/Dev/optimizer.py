@@ -307,19 +307,10 @@ class AircraftAerodynamics:
     def build_fuselage(self):
         beta = onp.linspace(0, onp.pi, self.n_fuse_sections)
         x_sections = []
-
-        for beta_i in beta:
-            x = -(self.fuse_len / 2) * np.cos(beta_i)
-            radius = (self.fuse_dia / 2) * np.sqrt(
-                np.maximum(1 - (x / (self.fuse_len / 2)) ** 2, 0.0)
-            )
-            x_sections.append(
-                asb.FuselageXSec(
-                    xyz_c=[x, 0, 0],
-                    radius=radius,
-                )
-            )
-
+        for i, beta_i in enumerate(beta):
+            x = -(self.fuse_len / 2) * onp.cos(beta_i)
+            radius = 0.0 if i in (0, len(beta) - 1) else (self.fuse_dia / 2) * onp.sin(beta_i)
+            x_sections.append(asb.FuselageXSec(xyz_c=[x, 0, 0], radius=radius))
         return asb.Fuselage(name="fuselage", xsecs=x_sections)
 
     def build_airplane(self):
