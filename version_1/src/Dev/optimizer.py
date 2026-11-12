@@ -29,8 +29,8 @@ class Config:
 
     def __init__(self):
         # --- optimization switches ---
-        self.fix_l_cg = True
-        self.fix_pylon_len = True
+        self.fix_l_cg = True #False does not work
+        self.fix_pylon_len = False
         self.fix_fuse_dia = True
 
         self.use_canards = True
@@ -570,7 +570,7 @@ class AircraftDesignOptimizer:
     # ---------------- constraints ----------------
     def _apply_constraints(self):
         opti, cfg, prop = self.opti, self.cfg, self.propulsion
-
+        
         # Minimum fuselage diameter at the specified nose-based station.
         if cfg.fix_fuse_dia:
             opti.subject_to(
@@ -582,15 +582,17 @@ class AircraftDesignOptimizer:
         else:
             opti.subject_to(self.fuse_dia >= self.fuse_dia_min)
 
-        # Pylon geometry and propeller clearance.
-        if cfg.fix_pylon_len:
+        
+        # Pylon geometry and propeller clearance, base condition broken
+        if False: #cfg.fix_pylon_len:
             opti.subject_to(self.pylon_len == self.forced_pylon_len)
         else:
             opti.subject_to(self.pylon_len >= self.prop_clearance)
+        
 
-        opti.subject_to(self.l_t >= 2 * 0.0635 + 0.01)
+        opti.subject_to(self.l_t >= 2 * 0.0635 + 0.01) #distance between top and bottom motors
         opti.subject_to(self.pylon_thick >= 0.012)
-
+        
         # Steady-level vertical force balance includes aerodynamic and propeller lift.
         if cfg.steady_level:
             opti.subject_to(self.lift_tot == cfg.aircraft_weight)
@@ -599,7 +601,7 @@ class AircraftDesignOptimizer:
 
         # Pitch trim: aerodynamic moment from AeroBuildup plus thrust-force moment.
         opti.subject_to(self.moment_about_cg == 0)
-
+    
         # CG and longitudinal static margin.
         if cfg.fix_l_cg:
             opti.subject_to(self.l_cg == self.forced_l_cg)
@@ -609,7 +611,7 @@ class AircraftDesignOptimizer:
         opti.subject_to(
             self.x_np - self.l_cg >= cfg.static_margin_frac * self.fuse_len
         )
-
+        
         # Longitudinal layout constraints.
         opti.subject_to(
             self.l_p + 0.75 * self.pylon_chord + 0.03 <= self.fuse_len
@@ -621,7 +623,7 @@ class AircraftDesignOptimizer:
             )
             opti.subject_to(self.l_c + 0.02 <= self.l_cg)
             opti.subject_to(self.l_c - 0.25 * self.canard_chord >= 0)
-
+        #
         # Thrust balance along the freestream direction.
         if cfg.steady_level:
             opti.subject_to(self.thrust_along_velocity == self.total_drag)
@@ -631,13 +633,13 @@ class AircraftDesignOptimizer:
         # Differential-thrust limit (only one pair of constraints is needed).
         opti.subject_to(prop.delta_T <= cfg.max_diff_frac * prop.thrust_tot)
         opti.subject_to(prop.delta_T >= -cfg.max_diff_frac * prop.thrust_tot)
-
+        
         # Propeller axis angle relative to the freestream.
         prop_axis_angle = self.AOA + self.pylon_inc
         max_prop_axis = cfg.prop_axis_max_deg * np.pi / 180
         opti.subject_to(prop_axis_angle <= max_prop_axis)
         opti.subject_to(prop_axis_angle >= -max_prop_axis)
-
+        
         # Local surface incidence / stall guards.
         max_stall = cfg.alpha_stall_deg * np.pi / 180
         opti.subject_to(self.alpha_p <= max_stall)
@@ -657,7 +659,7 @@ class AircraftDesignOptimizer:
         opti.subject_to(prop.M_tip_bottom <= cfg.M_tip_max)
         opti.subject_to(prop.T_top >= 0)
         opti.subject_to(prop.T_bottom >= 0)
-
+        
         opti.minimize(self.total_drag)
 
     # ---------------- solve & report ----------------
