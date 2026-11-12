@@ -4,6 +4,7 @@ import aerosandbox as asb
 import aerosandbox.numpy as np
 import numpy as onp
 from types import SimpleNamespace
+from pathlib import Path
 
 # =============================================================================
 # Module-level helpers
@@ -43,7 +44,7 @@ class Config:
         self.steady_level = True
 
         # --- propeller / powertrain ---
-        self.PERF_FILE = "PER3_5x37E-3_performance_file.txt"
+        self.PERF_FILE = Path(__file__).resolve().parent / "PER3_5x37E-3_performance_file.txt"
         self.prop_dia = 5 * 0.0254             # [m]
         self.rpm_min = 15000
         self.rpm_max = 44000
