@@ -107,22 +107,54 @@ class PropellerPerformanceDatabase:
                 f"at or above {rpm_lo} RPM."
             )
 
-        j_max = min(valid_blocks[rpm][-1, 1] for rpm in rpms)
-        j_max = onp.floor(j_max * 100) / 100
+        # APC stops each RPM block close to (but not always at) zero thrust.
+        # Extend every block linearly to its own zero-thrust advance ratio so
+        # the table covers the whole positive-thrust range; otherwise the
+        # shortest block caps J and creates an artificial minimum thrust.
+        extended_blocks = {
+            rpm: self._extend_to_zero_thrust(valid_blocks[rpm]) for rpm in rpms
+        }
+
+        j_max = min(j[-1] for j, _, _ in extended_blocks.values())
+        j_max = onp.floor(j_max * 1000) / 1000
         if j_max <= 0:
             raise ValueError(f"No positive advance-ratio range found in '{path}'.")
 
         j_grid = onp.linspace(0.0, j_max, 89)
         ct_table = onp.asarray([
-            onp.interp(j_grid, valid_blocks[rpm][:, 1], valid_blocks[rpm][:, 3])
-            for rpm in rpms
+            onp.interp(j_grid, *extended_blocks[rpm][:2]) for rpm in rpms
         ])
         cp_table = onp.asarray([
-            onp.interp(j_grid, valid_blocks[rpm][:, 1], valid_blocks[rpm][:, 4])
+            onp.interp(j_grid, extended_blocks[rpm][0], extended_blocks[rpm][2])
             for rpm in rpms
         ])
 
         return rpms, j_grid, ct_table, cp_table
+
+    @staticmethod
+    def _extend_to_zero_thrust(block, n_fit=3):
+        """Return (J, Ct, Cp) for one RPM block, extended linearly to Ct = 0.
+
+        A straight line through the last ``n_fit`` points gives the
+        zero-thrust advance ratio J0. If J0 lies beyond the last data point,
+        the point (J0, 0, Cp(J0)) is appended. Blocks whose data already
+        reaches zero thrust are returned unchanged.
+        """
+        j, ct, cp = block[:, 1], block[:, 3], block[:, 4]
+        ct_slope, ct_icpt = onp.polyfit(j[-n_fit:], ct[-n_fit:], 1)
+        if ct_slope >= 0:
+            return j, ct, cp
+
+        j_zero = -ct_icpt / ct_slope
+        if j_zero <= j[-1]:
+            return j, ct, cp
+
+        cp_slope, cp_icpt = onp.polyfit(j[-n_fit:], cp[-n_fit:], 1)
+        return (
+            onp.append(j, j_zero),
+            onp.append(ct, 0.0),
+            onp.append(cp, cp_slope * j_zero + cp_icpt),
+        )
 
     def evaluate(self, rpm, axial_velocity):
         """Return thrust [N], shaft power [W], torque [Nm], and advance ratio."""
@@ -309,11 +341,13 @@ class AircraftAerodynamics:
         beta = onp.linspace(0, onp.pi, self.n_fuse_sections)
         x_sections = []
 
+        # With x = -a cos(beta), the ellipse radius is exactly b sin(beta).
+        # Writing it this way avoids a symbolic sqrt(0) at the nose and tail,
+        # whose derivative is infinite and made IPOPT stop at iteration 0
+        # with "Invalid number in NLP function or derivative detected".
         for beta_i in beta:
-            x = -(self.fuse_len / 2) * np.cos(beta_i)
-            radius = (self.fuse_dia / 2) * np.sqrt(
-                np.maximum(1 - (x / (self.fuse_len / 2)) ** 2, 0.0)
-            )
+            x = -(self.fuse_len / 2) * onp.cos(beta_i)
+            radius = (self.fuse_dia / 2) * onp.sin(beta_i)
             x_sections.append(
                 asb.FuselageXSec(
                     xyz_c=[x, 0, 0],
@@ -532,8 +566,8 @@ class AircraftDesignOptimizer:
             to_axes="wind",
         )
 
-        # AeroBuildup defines L = -F_w[z]. In wind axes, positive x is
-        # along the freestream, so this is the propulsive contribution.
+        # AeroBuildup defines L = -F_w[z] and D = -F_w[x]: wind-axis +x points
+        # forward (into the oncoming flow), so +x thrust directly opposes drag.
         self.lift_prop = -thrust_z_wind
         self.thrust_along_freestream = thrust_x_wind
 
@@ -715,7 +749,7 @@ class AircraftDesignOptimizer:
             l_cg=value(self.l_cg),
         )
 
-    # Build the aircraft using optimized numerical values
+        # Build the aircraft using optimized numerical values
         estimator = AircraftAerodynamics(solved_design)
 
         return estimator.build_airplane()
@@ -735,7 +769,8 @@ class AircraftDesignOptimizer:
         print(f"Propeller lift:          {value(self.lift_prop):.3f} N")
         print(f"Total lift:              {value(self.lift_tot):.3f} N "
               f"(weight {cfg.aircraft_weight:.3f} N)")
-        print(f"L/D:                     {value(self.lift_tot) / value(self.total_drag):.3f}")
+        print(f"Aerodynamic L/D:         {value(self.lift_aero) / value(self.total_drag):.3f}")
+        print(f"Total L/D (incl. props): {value(self.lift_tot) / value(self.total_drag):.3f}")
 
         print(f"Fuselage length:         {value(self.fuse_len) * 1000:.1f} mm")
         print(f"Fuselage diameter:       {value(self.fuse_dia) * 1000:.1f} mm")
