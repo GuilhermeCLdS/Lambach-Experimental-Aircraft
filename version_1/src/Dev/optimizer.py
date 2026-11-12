@@ -142,7 +142,7 @@ class PropellerPerformanceDatabase:
         """
         j, ct, cp = block[:, 1], block[:, 3], block[:, 4]
         ct_slope, ct_icpt = onp.polyfit(j[-n_fit:], ct[-n_fit:], 1)
-        if ct_slope >= 0:
+        if ct[-1] <= 0 or ct_slope >= 0:
             return j, ct, cp
 
         j_zero = -ct_icpt / ct_slope
