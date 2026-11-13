@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import make_interp_spline
 
-GEOM_FILE  = "5x37E-3-PERF_geometry.txt"
+GEOM_FILE  = "5x75E-PERF_geometry.txt"
 
 
 velocity = 200/3.6

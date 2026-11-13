@@ -6,8 +6,16 @@ from src.optimization.helpers.polar_to_cartesian import polar_to_cartesian
 from src.optimization.helpers.radius_from_ellipse import radius_from_ellipse
 
 N_FUSE_SECTIONS = 31
-AIRFOIL = "naca0012"
+AIRFOIL1 = "NACA2412"  # NACA 4412 is too thick for the pylon chord
+AIRFOIL2 = "NACA0012"
 
+NOSE_FRAC = 0.25
+TAIL_FRAC = 0.30
+
+N_MID = 6.0     # superellipse exponent at mid-fuselage (2 = ellipse, larger = boxier)
+BLEND_POW = 2.0 # how quickly the boxiness ramps up (higher = stays elliptical longer)
+
+canard_taper_ratio = 0.75  # tip chord / root chord
 
 class AircraftAerodynamics:
     """Build the aircraft geometry and analyse it with one AeroBuildup run.
@@ -29,7 +37,7 @@ class AircraftAerodynamics:
         self.pylon_le = design.l_p - 0.25 * design.pylon_chord
 
     @staticmethod
-    def aero_surface(name, root_chord, tip_chord, twist_deg, y_root, z_root, y_tip, z_tip):
+    def aero_surface(name, root_chord, tip_chord, twist_deg, y_root, z_root, y_tip, z_tip, AIRFOIL):
         """One half-surface; AeroSandbox mirrors it across the XZ plane."""
         return asb.Wing(
             name=name,
@@ -57,7 +65,7 @@ class AircraftAerodynamics:
             wing = self.aero_surface(
                 name=name, root_chord=d.pylon_chord, tip_chord=d.pylon_chord,
                 twist_deg=np.degrees(d.pylon_inc),
-                y_root=y_root, z_root=z_root, y_tip=y_tip, z_tip=z_tip,
+                y_root=y_root, z_root=z_root, y_tip=y_tip, z_tip=z_tip, AIRFOIL=AIRFOIL2
             )
             wings.append(wing.translate([pylon_x, 0, 0]))
 
@@ -66,10 +74,10 @@ class AircraftAerodynamics:
             canard_x = -self.a + self.canard_le
             canard_root_radius = radius_from_ellipse(canard_x, self.a, self.b)
             canard = self.aero_surface(
-                name="canards", root_chord=d.canard_chord, tip_chord=d.canard_chord,
+                name="canards", root_chord=d.canard_chord, tip_chord=d.canard_chord * canard_taper_ratio,
                 twist_deg=np.degrees(d.canard_inc),
                 y_root=canard_root_radius, z_root=0.0,
-                y_tip=canard_root_radius + d.canard_len, z_tip=0.0,
+                y_tip=canard_root_radius + d.canard_len, z_tip=0.0, AIRFOIL=AIRFOIL1
             )
             wings.append(canard.translate([canard_x, 0, 0]))
 
@@ -86,6 +94,7 @@ class AircraftAerodynamics:
                 for b in beta
             ],
         )
+    #Fractions of total fuselage length (2a) taken up by each cone
 
     @property
     def l_cg_geometry(self):
@@ -110,3 +119,5 @@ class AircraftAerodynamics:
             airplane=self.build_airplane(), op_point=op_point,
         ).run_with_stability_derivatives(alpha=True, beta=False, p=False, q=False, r=False)
         return op_point, results
+
+    #def prop_drag(self, )

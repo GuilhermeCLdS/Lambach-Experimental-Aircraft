@@ -41,7 +41,7 @@ class Assumptions():
 
         #Flight conditions
         self.velocity = 200 / 3.6              # [m/s] 200 km/h
-        self.static_margin_frac = 0.02         # (x_np - x_cg) / fuse_len
+        self.static_margin_frac = 0.05         # (x_np - x_cg) / fuse_len
         self.alpha_stall_deg = 10.0            # [deg] local surface incidence guard
         self.prop_axis_max_deg = 12.0          # [deg] prop axis to freestream
 
@@ -63,7 +63,7 @@ class Assumptions():
 
         #Mass properties
         self.aircraft_mass = 0.85              # [kg]
-        self.cg_offset = 0.15                  # [m] l_cg = l_p - cg_offset
+        self.cg_offset = 0.06                  # [m] l_cg = l_p - cg_offset
 
         #Fuselage dimensions
         self.fuse_dia_min = 0.07               # [m]
@@ -71,7 +71,7 @@ class Assumptions():
         self.forced_pylon_len = 0.065          # [m]
         self.prop_clearance_gap = 0.01         # [m] prop tip to fuselage
         self.tail_margin = 0.03                # [m] pylon TE to fuselage tail
-        self.canard_cg_gap = 0.02              # [m] canard AC ahead of CG
+        #self.canard_cg_gap = 0.02              # [m] canard AC ahead of CG
 
     @property
     def aircraft_weight(self):

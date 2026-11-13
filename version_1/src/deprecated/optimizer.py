@@ -45,7 +45,7 @@ class Config:
 
         # --- propeller / powertrain ---
         # src/deprecated/ -> repository root -> data/
-        self.PERF_FILE = Path(__file__).resolve().parents[3] / "data" / "PER3_5x37E-3_performance_file.txt"
+        self.PERF_FILE = Path(__file__).resolve().parents[3] / "docs" / "PER3_5x75E_performance_file.txt"
         self.prop_dia = 5 * 0.0254             # [m]
         self.rpm_min = 15000
         self.rpm_max = 44000
@@ -53,7 +53,7 @@ class Config:
         self.M_tip_max = 0.80
 
         # --- geometry / flight limits ---
-        self.cg_offset = 0.15                  # [m] l_cg = l_p - cg_offset
+        self.cg_offset = 0.07                  # [m] l_cg = l_p - cg_offset
         self.alpha_stall_deg = 10.0
         self.prop_axis_max_deg = 12.0
 

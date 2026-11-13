@@ -50,7 +50,7 @@ def apply_design_constraints(optimizer):
     opti.subject_to(d.l_p + 0.75 * d.pylon_chord + asm.tail_margin <= d.fuse_len)
     if asm.use_canards:
         opti.subject_to(d.l_c + 0.75 * d.canard_chord <= d.l_p - 0.25 * d.pylon_chord)
-        opti.subject_to(d.l_c + asm.canard_cg_gap <= d.l_cg)
+        #opti.subject_to(d.l_c + asm.canard_cg_gap <= d.l_cg)
         opti.subject_to(d.l_c - 0.25 * d.canard_chord >= 0)
 
     # Thrust balance along the freestream.
