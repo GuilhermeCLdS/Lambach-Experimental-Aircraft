@@ -5,8 +5,8 @@ from scipy.interpolate import make_interp_spline
 GEOM_FILE  = "5x37E-3-PERF_geometry.txt"
 
 
-velocity = 300/3.6
-rpm = 2000
+velocity = 200/3.6
+rpm = 28000
 rho = 1.225
 mu = 1.81e-5
 n_blades = 3
@@ -37,9 +37,11 @@ def parse_xfoil_polar(filename):
                         cds.append(cd)
                     except ValueError:
                         continue
-                        
-    return alphas, cds
 
+    alphas = np.array(alphas)
+    cds = np.array(cds)
+    alphas, idx = np.unique(alphas, return_index=True)
+    return list(alphas), list(cds[idx])
 
 cd_naca4412 = parse_xfoil_polar("xf-naca4412-il-200000.txt")[1]
 alpha_of_naca4412 = np.array(parse_xfoil_polar("xf-naca4412-il-200000.txt")[0])
@@ -56,6 +58,15 @@ y_spline_naca4412 = spline_naca4412(alpha_of_naca4412_dense)
 alpha_of_e63_dense = np.linspace(alpha_of_e63.min(), alpha_of_e63.max(), 100)
 spline_e63 = make_interp_spline(alpha_of_e63, cd_e63, k=3)
 y_spline_e63 = spline_e63(alpha_of_e63_dense)
+
+def cd_lookup(alpha, a_tab, cd_tab):
+    if a_tab[0] <= alpha <= a_tab[-1]:
+        return np.interp(alpha, a_tab, cd_tab)
+    edge = a_tab[0] if alpha < a_tab[0] else a_tab[-1]
+    cd_edge = np.interp(edge, a_tab, cd_tab)
+    s2_edge = np.sin(np.radians(edge))**2
+    s2 = np.sin(np.radians(alpha))**2
+    return cd_edge + (cd_max - cd_edge)*(s2 - s2_edge)/(1 - s2_edge)
 
 def read_geometry(path):
     """Return station, chord, twist(deg), thickness ratio arrays (inches / deg)."""
@@ -86,18 +97,27 @@ for i in range(len(r)):
     phi = np.pi/2 - rel_alpha
 
     alpha = np.degrees(twist[i]*np.pi/180 + AOA - phi)
-    if r[i]/r[-1] < 0.264:
-        cd = np.interp(alpha, alpha_of_e63_dense, y_spline_e63)
-    if r[i]/r[-1] > 0.264 and r[i]/r[-1] < 0.96:
-        f = np.clip((st[i] - airfoil1_end) / (airfoil2_start - airfoil1_end), 0, 1)
-        cd = (1 - f) * np.interp(alpha, alpha_of_e63_dense, y_spline_e63) + f * np.interp(alpha, alpha_of_naca4412_dense, y_spline_naca4412)
-    if r[i]/r[-1] > 0.96:
-        cd = np.interp(alpha, alpha_of_naca4412_dense, y_spline_naca4412)
+
+    print(alpha)
+
+    x = r[i]/r[-1]
+    cd_e = cd_lookup(alpha, alpha_of_e63_dense, y_spline_e63)
+    cd_n = cd_lookup(alpha, alpha_of_naca4412_dense, y_spline_naca4412)
+
+    if x <= airfoil1_end:
+        cd = cd_e
+    elif x < airfoil2_start:
+        f = (x - airfoil1_end) / (airfoil2_start - airfoil1_end)
+        cd = (1 - f) * cd_e + f * cd_n
+    else:
+        cd = cd_n
 
     dD = 0.5*rho*v_rel**2*s*cd
     D += dD
     D_ax += dD*np.cos(rel_alpha)
     Q += dD*r[i]*np.sin(rel_alpha)
+
+D_ax_tot = D_ax*n_blades
 
 D_ax_tot = D_ax*n_blades
 
