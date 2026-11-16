@@ -73,6 +73,13 @@ class Assumptions():
         self.tail_margin = 0.03                # [m] pylon TE to fuselage tail
         #self.canard_cg_gap = 0.02              # [m] canard AC ahead of CG
 
+        self.PROP_GEOM_FILE   = "5x75E-PERF_geometry.txt"
+        self.E63_POLAR_FILE   = "xf-e63-il-200000.txt"
+        self.NACA4412_FILE    = "xf-naca4412-il-200000.txt"
+        self.PROP_TRANSITION  = (0.66 / 2.5, 2.4 / 2.5)   # span-fraction blend window
+        self.PROP_RPM         = 28_000.0
+        self.PROP_N_BLADES    = 3
+
     @property
     def aircraft_weight(self):
         """[N] Weight from mass and standard gravity."""
