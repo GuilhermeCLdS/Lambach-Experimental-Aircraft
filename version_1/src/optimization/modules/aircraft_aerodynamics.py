@@ -5,7 +5,7 @@ import numpy as onp
 from src.optimization.helpers.polar_to_cartesian import polar_to_cartesian
 from src.optimization.helpers.radius_from_ellipse import radius_from_ellipse
 from src.deprecated.propeller_drag import (BladeGeometry, XFoilPolar, AirfoilSection, PropellerAnalysis)
-from src.global_parameters.global_parameters import Parameters as para, Assumptions as ass
+from src.global_parameters.global_parameters import (Parameters as para, Assumptions)
 
 N_FUSE_SECTIONS = 31
 AIRFOIL1 = "NACA2412"  # NACA 4412 is too thick for the pylon chord
@@ -17,15 +17,14 @@ TAIL_FRAC = 0.30
 N_MID = 6.0     # superellipse exponent at mid-fuselage (2 = ellipse, larger = boxier)
 BLEND_POW = 2.0 # how quickly the boxiness ramps up (higher = stays elliptical longer)
 
-PROP_GEOM_FILE   = ass.PROP_GEOM_FILE
-E63_POLAR_FILE   = ass.E63_POLAR_FILE
-NACA4412_FILE    = ass.NACA4412_FILE
-PROP_TRANSITION  = ass.PROP_TRANSITION
-PROP_RPM         = ass.PROP_RPM
-PROP_N_BLADES    = ass.PROP_N_BLADES
+PROP_GEOM_FILE   = Assumptions.prop_geom_file
+E63_POLAR_FILE   = Assumptions.e63_polar_file
+NACA4412_FILE    = Assumptions.NACA4412_file
+PROP_TRANSITION  = Assumptions.prop_transition
+PROP_N_BLADES    = Assumptions.prop_n_blades
 PROP_RHO         = para.AIR_DENSITY_SEA_LEVEL
 PROP_MU          = para.DYNAMIC_VISCOSITY_SEA_LEVEL
-N_PROPELLERS     = ass.N_PROPELLERS
+N_PROPELLERS     = Assumptions.n_propellers
 
 canard_taper_ratio = 0.75  # tip chord / root chord
 
