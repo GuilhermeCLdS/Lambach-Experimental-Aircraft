@@ -1,0 +1,30 @@
+2026-11-13T12:39:41Z CREATE version_1/src/prop_calc/prop.py - Prop class for PER3 data
+2026-11-13T12:39:41Z CREATE version_1/src/prop_calc/data_loading.py - PER3 file reading and prop loading
+2026-11-13T12:39:41Z CREATE version_1/src/prop_calc/physics.py - Physics calculations (thrust, current, evaluate)
+2026-11-13T12:39:41Z CREATE version_1/src/prop_calc/main.py - Main entry point
+2026-11-13T12:39:41Z DELETE version_1/src/prop_calc/choose_prop.py - Replaced by modular structure
+2026-11-13T12:46:14Z CREATE version_1/src/prop_calc/electronics.py - Battery/electronics for quad setup
+2026-11-13T12:46:14Z CREATE version_1/src/prop_calc/evaluate.py - Evaluation logic
+2026-11-13T12:46:14Z MODIFY version_1/src/prop_calc/physics.py - Core physics only
+2026-11-13T12:46:14Z MODIFY version_1/src/prop_calc/main.py - Simplified main with quad electronics
+2026-11-13T12:46:14Z CREATE version_1/src/prop_calc/verify.py - Quick thrust verification
+2026-11-13T13:12:02Z MODIFY version_1/src/prop_calc/prop.py - Improved readability and documentation
+2026-11-13T13:12:02Z MODIFY version_1/src/prop_calc/data_loading.py - Improved readability and documentation
+2026-11-13T13:12:02Z MODIFY version_1/src/prop_calc/physics.py - Improved readability and documentation
+2026-11-13T13:12:02Z MODIFY version_1/src/prop_calc/electronics.py - Improved readability and documentation
+2026-11-13T13:12:02Z MODIFY version_1/src/prop_calc/evaluate.py - Improved readability and documentation
+2026-11-13T13:12:02Z MODIFY version_1/src/prop_calc/main.py - Improved readability and documentation
+2026-11-13T13:12:02Z MODIFY version_1/src/prop_calc/verify.py - Improved readability and documentation
+2026-11-13T13:32:40Z MODIFY version_1/src/prop_calc/main_prop.py - Added thrust at ESC limit report
+2026-11-13T13:33:17Z ANSWER electronics concern - cruise current 11A vs 35A limit, design speed achievable
+2026-11-13T13:47:50Z ADD max motor current check to evaluate.py - now reports both ESC limit (35A) and motor datasheet Imax (44.6A)
+2026-11-13T14:53:53Z FIX per-prop thrust: W/(L/D) is TOTAL drag, divided by n_props=4 - evaluate.py, main_prop.py, CALCULATION_CHAIN.md updated
+2026-11-13T15:05:57Z IMPLEMENT symmetric solves for cruise/climb/hover - evaluate.py, main_prop.py, CALCULATION_CHAIN.md updated
+2026-11-13T15:12:17Z ADD battery sag (75% per-cell), per-condition current/RPM/power checks, motor RPM max - evaluate.py, electronics.py, main_prop.py updated
+2026-11-13T15:18:46Z CLARIFY output units (per prop vs total), fix ESC limit report, explain 5x5F vs others - main_prop.py, evaluate.py updated
+2026-11-13T15:27:18Z ADD true peak current finder across 0-V_max at full throttle - evaluate.py, main_prop.py updated
+2026-11-13T15:28:50Z DOC CALCULATION_CHAIN.md updated with true peak current section
+2026-11-13T15:38:14Z Full-throttle envelope check now WARNING only - symmetric solves are the real pass/fail criteria
+2026-11-13T15:42:02Z Full-throttle overcurrent check now only at known T_req points (V_max and static), warning only
+2026-11-13T15:48:53Z ESC limit updated to 60A (GEPRC TAKER H60 BLS 60A 4in1) - 3 props pass: 5x7.5E, 5x5F, 5x5E
+2026-11-13T15:55:02Z Code simplified and modularized - electronics.py with ElectricalSystem class, evaluate.py simplified, main_prop.py using ElectricalSystem, 2 props pass (5x5F, 5x5E)
