@@ -91,7 +91,7 @@ class Assumptions():
 
         # Mass properties
         self.aircraft_mass = 0.85              # [kg]
-        self.cg_offset = 0.06                  # [m] l_cg = l_p - cg_offset
+        self.cg_offset = 0.1                  # [m] l_cg = l_p - cg_offset
 
         # Fuselage dimensions
         self.fuse_dia_min = 0.07               # [m]
@@ -105,7 +105,7 @@ class Assumptions():
         self.use_canards = True                # [-] Enable canard surfaces
         self.use_diff_thrust = True            # [-] Enable differential thrust between top/bottom prop pairs
         self.steady_level = True               # [-] Equalities (True) or >= (False) for force balance
-        self.fix_l_cg = True                   # [-] Fix CG location to l_p - cg_offset
+        self.fix_l_cg = False                   # [-] Fix CG location to l_p - cg_offset
         self.fix_pylon_len = True              # [-] Fix pylon length to forced_pylon_len
         self.fix_fuse_dia = True               # [-] Fix fuselage diameter to minimum
 

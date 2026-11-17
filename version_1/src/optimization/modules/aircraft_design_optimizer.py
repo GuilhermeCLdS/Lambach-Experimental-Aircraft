@@ -50,19 +50,10 @@ class AircraftDesignOptimizer:
 
         aero_model = AircraftAerodynamics(d, self.assumptions.use_canards)
         self.op_point, self.aero = aero_model.analyze(self.assumptions.velocity)
-        self.prop_drag_top = aero_model.prop_drag(
-            velocity = self.assumptions.velocity,
-            prop_aoa_deg = self.alpha_p,
-            rpm = PropulsionSystem.rpm_top,
-        )
-        self.prop_drag_bottom = aero_model.prop_drag(
-            velocity = self.assumptions.velocity,
-            prop_aoa_deg = self.alpha_p,
-            rpm = PropulsionSystem.rpm_bottom,
-        )
+
 
         self.lift_aero = self.aero["L"]
-        self.total_drag = self.aero["D"] + self.prop_drag_top + self.prop_drag_bottom
+        self.total_drag = self.aero["D"]
         self.drag_profile = self.aero["D_profile"]
         self.drag_induced = self.aero["D_induced"]
         self.moment_aero = self.aero["m_b"]
