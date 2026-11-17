@@ -14,7 +14,7 @@ class DesignVariables:
         self.use_canards = assumptions.use_canards
 
         # Attitude
-        self.AOA = opti.variable(init_guess=4 * np.pi / 180, lower_bound=0.0, upper_bound=12 * np.pi / 180)
+        self.AOA = opti.variable(init_guess=4 * np.pi / 180, lower_bound=0.0, upper_bound=8 * np.pi / 180)
 
         # Fuselage
         self.fuse_len = opti.variable(init_guess=0.23625, lower_bound=0.20, upper_bound=0.60)
@@ -30,7 +30,7 @@ class DesignVariables:
             self.canard_len = opti.variable(init_guess=0.06, lower_bound=0.03, upper_bound=0.30)
             self.canard_chord = opti.variable(init_guess=0.06, lower_bound=0.06, upper_bound=0.20)
             self.canard_inc = opti.variable(
-                init_guess=-0.034907, lower_bound=-6 * np.pi / 180, upper_bound=10 * np.pi / 180,
+                init_guess=-0.034907, lower_bound=-6 * np.pi / 180, upper_bound=6 * np.pi / 180,
             )
             self.canard_thick = self.canard_chord * assumptions.tc_canard
             self.l_c = opti.variable(init_guess=0.03, lower_bound=0.03, upper_bound=0.50)
@@ -58,3 +58,5 @@ class DesignVariables:
         r_fuse_at_pylon = radius_from_ellipse(x_pylon_le, self.fuse_len / 2, self.fuse_dia / 2)
         self.prop_z_arm = (r_fuse_at_pylon + self.pylon_len) * np.sin(np.pi / 4)
         self.l_t = 2 * self.prop_z_arm
+
+        self.taper_ratio = opti.variable(init_guess=0.75, lower_bound=0.1, upper_bound=1.0)  # [-] Taper ratio of the canard (tip chord / root chord)

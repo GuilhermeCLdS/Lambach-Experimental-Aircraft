@@ -18,6 +18,7 @@ class Parameters():
     TEMPERATURE_SEA_LEVEL = 288.15     # [K]
     AIR_DENSITY_SEA_LEVEL = 1.225      # [kg/m^3]
     DYNAMIC_VISCOSITY_SEA_LEVEL = 1.789e-5   # [kg/m/s]
+    rho_pla = 0.00124                       # [kg/m^3] PLA density
 
     @classmethod
     def speed_of_sound_sea_level(cls):
@@ -108,6 +109,8 @@ class Assumptions():
         self.fix_l_cg = False                   # [-] Fix CG location to l_p - cg_offset
         self.fix_pylon_len = True              # [-] Fix pylon length to forced_pylon_len
         self.fix_fuse_dia = True               # [-] Fix fuselage diameter to minimum
+
+        self.pusher = True                          # [-] Pusher configuration (True) or tractor (False)
 
     @property
     def aircraft_weight(self):

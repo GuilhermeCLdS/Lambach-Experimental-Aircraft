@@ -9,6 +9,7 @@ from src.optimization.modules.aircraft_aerodynamics import AircraftAerodynamics
 from src.optimization.modules.apply_design_constraints import apply_design_constraints
 from src.optimization.modules.design_variables import DesignVariables
 from src.optimization.modules.propulsion_system import PropulsionSystem
+from src.optimization.modules.mass_cg_calc import MassProperties
 
 SOLVED_DESIGN_KEYS = (
     "AOA", "fuse_len", "fuse_dia", "pylon_len", "pylon_chord", "pylon_inc",

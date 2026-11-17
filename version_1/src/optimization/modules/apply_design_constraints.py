@@ -1,5 +1,5 @@
 import aerosandbox.numpy as np
-
+from src.optimization.modules.mass_cg_calc import MassProperties
 
 def apply_design_constraints(optimizer):
     """Add every constraint of the design problem to ``optimizer.opti``.
@@ -44,6 +44,8 @@ def apply_design_constraints(optimizer):
         opti.subject_to(d.l_cg == d.forced_l_cg)
     else:
         opti.subject_to(d.l_cg <= optimizer.x_np)
+        opti.subject_to(d.l_cg == MassProperties(d.l_c*1000, d.l_p*1000).calculate_mass_properties()[0]/1000)
+
     opti.subject_to(optimizer.x_np - d.l_cg >= asm.static_margin_frac * d.fuse_len)
 
     # Longitudinal layout.

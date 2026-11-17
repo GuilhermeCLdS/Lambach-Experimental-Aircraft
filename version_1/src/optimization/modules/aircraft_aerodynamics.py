@@ -6,6 +6,7 @@ from src.optimization.helpers.polar_to_cartesian import polar_to_cartesian
 from src.optimization.helpers.radius_from_ellipse import radius_from_ellipse
 from src.deprecated.propeller_drag import (BladeGeometry, XFoilPolar, AirfoilSection, PropellerAnalysis)
 from src.global_parameters.global_parameters import Parameters as para, Assumptions as ass
+from src.optimization.modules.design_variables import DesignVariables
 
 N_FUSE_SECTIONS = 31
 AIRFOIL1 = "NACA2412"  # NACA 4412 is too thick for the pylon chord
@@ -17,7 +18,7 @@ TAIL_FRAC = 0.30
 N_MID = 6.0     # superellipse exponent at mid-fuselage (2 = ellipse, larger = boxier)
 BLEND_POW = 2.0 # how quickly the boxiness ramps up (higher = stays elliptical longer)
 
-canard_taper_ratio = 0.75  # tip chord / root chord
+#canard_taper_ratio = 0.75  # tip chord / root chord
 
 class AircraftAerodynamics:
     """Build the aircraft geometry and analyse it with one AeroBuildup run.
@@ -33,6 +34,7 @@ class AircraftAerodynamics:
     def __init__(self, design, use_canards):
         self.design = design
         self.use_canards = use_canards
+        self.taper_ratio = 0.75
         self.a = design.fuse_len / 2
         self.b = design.fuse_dia / 2
         self.canard_le = design.l_c - 0.25 * design.canard_chord
@@ -76,7 +78,7 @@ class AircraftAerodynamics:
             canard_x = -self.a + self.canard_le
             canard_root_radius = radius_from_ellipse(canard_x, self.a, self.b)
             canard = self.aero_surface(
-                name="canards", root_chord=d.canard_chord, tip_chord=d.canard_chord * canard_taper_ratio,
+                name="canards", root_chord=d.canard_chord, tip_chord=d.canard_chord * self.taper_ratio,
                 twist_deg=np.degrees(d.canard_inc),
                 y_root=canard_root_radius, z_root=0.0,
                 y_tip=canard_root_radius + d.canard_len, z_tip=0.0, AIRFOIL=AIRFOIL1
