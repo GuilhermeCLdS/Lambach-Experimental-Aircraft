@@ -113,3 +113,10 @@ class AircraftDesignOptimizer:
     def build_solved_airplane(self):
         """asb.Airplane of the optimized design (e.g. for draw_three_view)."""
         return AircraftAerodynamics(self.solved_design(), self.assumptions.use_canards).build_airplane()
+
+    def solved_mass_kg(self):
+        """Self-consistent aircraft mass at the solution, from the design's l_c / l_p."""
+        d = self.solved_design()               # l_c, l_p in metres
+        return MassProperties(d.l_c * 1000.0,
+                              d.l_p * 1000.0,
+                              self.assumptions).calculate_total_mass()

@@ -14,7 +14,7 @@ class DesignVariables:
         self.use_canards = assumptions.use_canards
 
         # Attitude
-        self.AOA = opti.variable(init_guess=4 * np.pi / 180, lower_bound=0.0, upper_bound=8 * np.pi / 180)
+        self.AOA = opti.variable(init_guess=4 * np.pi / 180, lower_bound=0.0, upper_bound=10 * np.pi / 180)
 
         # Fuselage
         self.fuse_len = opti.variable(init_guess=0.23625, lower_bound=0.20, upper_bound=0.60)
@@ -22,15 +22,15 @@ class DesignVariables:
 
         # Pylons
         self.pylon_len = opti.variable(init_guess=0.08, lower_bound=0.05, upper_bound=0.20)
-        self.pylon_chord = opti.variable(init_guess=0.075, lower_bound=0.015, upper_bound=0.150)
+        self.pylon_chord = opti.variable(init_guess=0.05, lower_bound=0.015, upper_bound=0.1)
         self.pylon_thick = self.pylon_chord * assumptions.tc_pylon
 
         # Canards (variables only exist when canards are enabled)
         if assumptions.use_canards:
-            self.canard_len = opti.variable(init_guess=0.06, lower_bound=0.03, upper_bound=0.30)
+            self.canard_len = opti.variable(init_guess=0.1, lower_bound=0.07, upper_bound=0.20)
             self.canard_chord = opti.variable(init_guess=0.06, lower_bound=0.06, upper_bound=0.20)
             self.canard_inc = opti.variable(
-                init_guess=-0.034907, lower_bound=-6 * np.pi / 180, upper_bound=6 * np.pi / 180,
+                init_guess=-0.034907, lower_bound=-6 * np.pi / 180, upper_bound=8 * np.pi / 180,
             )
             self.canard_thick = self.canard_chord * assumptions.tc_canard
             self.l_c = opti.variable(init_guess=0.03, lower_bound=0.03, upper_bound=0.50)

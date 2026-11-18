@@ -75,7 +75,7 @@ class Assumptions():
         self.pylon_thick_min = 0.012           # [m]
 
         # Engine parameters
-        self.perf_file = DATA_DIR / "PER3_5x5F.dat"
+        self.perf_file = DATA_DIR / "PER3_5x75E.dat"
         self.n_propellers = 4                  # [-] Number of propellers
         self.prop_dia = 5 * 0.0254             # [m] Max prop diameter
         self.rpm_min = 15000                   # [rpm] Min motor RPM TODO: change to fit prop or motor limit

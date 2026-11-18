@@ -10,7 +10,7 @@ from src.optimization.modules.design_variables import DesignVariables
 
 N_FUSE_SECTIONS = 31
 AIRFOIL1 = "NACA2412"  # NACA 4412 is too thick for the pylon chord
-AIRFOIL2 = "NACA0012"
+AIRFOIL2 = "NACA0016"
 
 NOSE_FRAC = 0.25
 TAIL_FRAC = 0.30
