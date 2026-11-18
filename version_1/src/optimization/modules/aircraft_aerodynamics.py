@@ -39,6 +39,7 @@ class AircraftAerodynamics:
         self.b = design.fuse_dia / 2
         self.canard_le = design.l_c - 0.25 * design.canard_chord
         self.pylon_le = design.l_p - 0.25 * design.pylon_chord
+        self.pylon_le_TE = design.l_p + 0.75 * design.pylon_chord  
 
     @staticmethod
     def aero_surface(name, root_chord, tip_chord, twist_deg, y_root, z_root, y_tip, z_tip, AIRFOIL):
@@ -88,17 +89,31 @@ class AircraftAerodynamics:
         return wings
 
     def build_fuselage(self):
-        # With x = -a cos(beta) the ellipse radius is exactly b sin(beta); this
-        # avoids a symbolic sqrt(0) (infinite derivative) at the nose and tail.
-        beta = onp.linspace(0, onp.pi, N_FUSE_SECTIONS)
-        return asb.Fuselage(
-            name="fuselage",
-            xsecs=[
-                asb.FuselageXSec(xyz_c=[-self.a * onp.cos(b), 0, 0], radius=self.b * onp.sin(b))
-                for b in beta
-            ],
-        )
-    #Fractions of total fuselage length (2a) taken up by each cone
+
+                beta1 = np.linspace(0, np.pi/2, N_FUSE_SECTIONS//2)
+                beta2 = np.linspace(0, np.pi/2, N_FUSE_SECTIONS//2)
+                n = 1.5
+                rho = 0.1*self.b
+
+                return asb.Fuselage(
+                    name="fuselage",
+                    #the droplet-shape part of the fuselage goes from the start to the start of the canards, this is because the larger the droplet-shaped part the more aerodynamic will be the fuselagea and therefore less drag
+                    #the canards are therefore the constraint and impose the maximum length of the nose
+                    xsecs = [
+                        asb.FuselageXSec(xyz_c=[self.canard_le * (1 - np.cos(b)), 0, 0], radius=self.b * (1 - ((self.canard_le * (1 - np.cos(b)) - self.canard_le) / self.canard_le) ** 2) ** (1 / n)
+                        )
+                        for b in beta1
+                    ] + [
+                        asb.FuselageXSec(xyz_c=[self.canard_le, 0, 0], radius=self.b)
+                    ] + [
+                        asb.FuselageXSec(xyz_c=[self.pylon_le_TE, 0, 0], radius=self.b)
+                    ] + [
+                        asb.FuselageXSec(xyz_c=[self.pylon_le_TE + ((2*self.a - self.pylon_le_TE) * np.sin(b)), 0, 0], radius=np.sqrt((self.b**2 * (2*(((self.pylon_le_TE + 2*self.a - self.pylon_le_TE) * np.sin(b))/(self.a*2))**3 - 3*(((self.pylon_le_TE + 2*self.a - self.pylon_le_TE) * np.sin(b))/(self.a*2))**2 + 1) - 2*rho*(self.a*2) * ((((self.pylon_le_TE + 2*self.a - self.pylon_le_TE) * np.sin(b))/(self.a*2))**3 - (((self.pylon_le_TE + 2*self.a - self.pylon_le_TE) * np.sin(b))/(self.a*2))**2))))
+                        for b in beta2
+                    ]
+                ) 
+            #Fractions of total fuselage length (2a) taken up by each cone
+
 
     @property
     def l_cg_geometry(self):
