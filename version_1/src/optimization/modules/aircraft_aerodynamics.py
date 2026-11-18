@@ -92,8 +92,8 @@ class AircraftAerodynamics:
 
                 beta1 = np.linspace(0, np.pi/2, N_FUSE_SECTIONS//2)
                 beta2 = np.linspace(0, np.pi/2, N_FUSE_SECTIONS//2)
-                n = 1.5
-                rho = 0.1*self.b
+                n = 2
+                rho = 0.3*self.b
 
                 return asb.Fuselage(
                     name="fuselage",
@@ -106,7 +106,7 @@ class AircraftAerodynamics:
                     ] + [
                         asb.FuselageXSec(xyz_c=[-self.a + self.canard_le, 0, 0], radius=self.b)
                     ] + [
-                        asb.FuselageXSec(xyz_c=[-self.a + self.pylon_le_TE, 0, 0], radius=self.b)
+                        asb.FuselageXSec(xyz_c=[-self.a + np.maximum(self.pylon_le_TE, self.design.l_p + 0.04), 0, 0], radius=self.b)
                     ] + [
                         asb.FuselageXSec(xyz_c=[-self.a + self.pylon_le_TE + ((2*self.a - self.pylon_le_TE) * np.sin(b)), 0, 0], radius=np.sqrt(np.maximum(
                         self.b**2 * (2*np.sin(b)**3 - 3*np.sin(b)**2 + 1)

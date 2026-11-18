@@ -37,6 +37,9 @@ def print_design_report(optimizer):
     print(f"AOA:                     {deg(v(d.AOA)):.2f} deg")
     print(f"AeroBuildup CLa:         {v(optimizer.CLa):.4f} 1/rad")
     print(f"AeroBuildup Cma:         {v(optimizer.Cma):.4f} 1/rad")
+    print(f"Nose Superellipse Exp.:  {2}")
+    print(f"Tail Superellipse Exp.:  {v(0.3*d.fuse_len)}")
+    print(f"Fuselage Cyllinder len:  {v(d.l_c - 0.25 * d.canard_chord - (d.l_p + 0.75 * d.pylon_chord))}")
 
     print("--- PROPULSION ---")
     print(f"RPM upper / lower:       {v(prop.rpm_top):.0f} / {v(prop.rpm_bottom):.0f}")
