@@ -100,18 +100,21 @@ class AircraftAerodynamics:
                     #the droplet-shape part of the fuselage goes from the start to the start of the canards, this is because the larger the droplet-shaped part the more aerodynamic will be the fuselagea and therefore less drag
                     #the canards are therefore the constraint and impose the maximum length of the nose
                     xsecs = [
-                        asb.FuselageXSec(xyz_c=[self.canard_le * (1 - np.cos(b)), 0, 0], radius=self.b * (1 - ((self.canard_le * (1 - np.cos(b)) - self.canard_le) / self.canard_le) ** 2) ** (1 / n)
+                        asb.FuselageXSec(xyz_c=[-self.a + self.canard_le * (1 - np.cos(b)), 0, 0], radius=self.b * (1 - ((self.canard_le * (1 - np.cos(b)) - self.canard_le) / self.canard_le) ** 2) ** (1 / n)
                         )
                         for b in beta1
                     ] + [
-                        asb.FuselageXSec(xyz_c=[self.canard_le, 0, 0], radius=self.b)
+                        asb.FuselageXSec(xyz_c=[-self.a + self.canard_le, 0, 0], radius=self.b)
                     ] + [
-                        asb.FuselageXSec(xyz_c=[self.pylon_le_TE, 0, 0], radius=self.b)
+                        asb.FuselageXSec(xyz_c=[-self.a + self.pylon_le_TE, 0, 0], radius=self.b)
                     ] + [
-                        asb.FuselageXSec(xyz_c=[self.pylon_le_TE + ((2*self.a - self.pylon_le_TE) * np.sin(b)), 0, 0], radius=np.sqrt((self.b**2 * (2*(((self.pylon_le_TE + 2*self.a - self.pylon_le_TE) * np.sin(b))/(self.a*2))**3 - 3*(((self.pylon_le_TE + 2*self.a - self.pylon_le_TE) * np.sin(b))/(self.a*2))**2 + 1) - 2*rho*(self.a*2) * ((((self.pylon_le_TE + 2*self.a - self.pylon_le_TE) * np.sin(b))/(self.a*2))**3 - (((self.pylon_le_TE + 2*self.a - self.pylon_le_TE) * np.sin(b))/(self.a*2))**2))))
+                        asb.FuselageXSec(xyz_c=[-self.a + self.pylon_le_TE + ((2*self.a - self.pylon_le_TE) * np.sin(b)), 0, 0], radius=np.sqrt(np.maximum(
+                        self.b**2 * (2*np.sin(b)**3 - 3*np.sin(b)**2 + 1)
+                        - 2*rho*(2*self.a - self.pylon_le_TE) * (np.sin(b)**3 - np.sin(b)**2),
+                        0.0)))
                         for b in beta2
                     ]
-                ) 
+                )
             #Fractions of total fuselage length (2a) taken up by each cone
 
 
