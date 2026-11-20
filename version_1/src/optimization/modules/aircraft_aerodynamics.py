@@ -143,20 +143,19 @@ class AircraftAerodynamics:
         ).run_with_stability_derivatives(alpha=True, beta=False, p=False, q=False, r=False)
         return op_point, results
 
-    def analyze_version2(self, velocity):
-        """Run VLM for the wings, neuralfoil for the airfoils used and then integrate 
-        over the wings to get an approximate of the viscous drag. 
-        The fuselage is completely ignored by VLM, its drag and the interference have to 
-        be computed apart
-        """
-        op_point = asb.OperatingPoint(velocity=velocity, alpha=np.degrees(self.design.AOA))
-        analysis = asb.VortexLatticeMethod(
-            airplane=self.build_airplane(),
-            op_point=op_point,
-        aero_data = analysis.run()
-        D_i_wings = aero_data['D']
-        
-)
+    # def analyze_version2(self, velocity):
+    #     """Run VLM for the wings, neuralfoil for the airfoils used and then integrate 
+    #     over the wings to get an approximate of the viscous drag. 
+    #     The fuselage is completely ignored by VLM, its drag and the interference have to 
+    #     be computed apart
+    #     """
+    #     op_point = asb.OperatingPoint(velocity=velocity, alpha=np.degrees(self.design.AOA))
+    #     analysis = asb.VortexLatticeMethod(
+    #         airplane=self.build_airplane(),
+    #         op_point=op_point,
+    #         aero_data = analysis.run(),
+    #         D_i_wings = aero_data['D']
+    #         )
         
 
                  

@@ -17,7 +17,7 @@ class DesignVariables:
         self.AOA = opti.variable(init_guess=4 * np.pi / 180, lower_bound=0.0, upper_bound=10 * np.pi / 180)
 
         # Fuselage
-        self.fuse_len = opti.variable(init_guess=0.35, lower_bound=0.20, upper_bound=0.60)
+        self.fuse_len = opti.variable(init_guess=0.30, lower_bound=0.20, upper_bound=0.60)
         self.fuse_dia = opti.variable(init_guess=0.073747, lower_bound=0.05, upper_bound=0.15)
         self.cyl_start = opti.variable(init_guess = 0.07, lower_bound = 0.03, upper_bound = 0.15)
 
