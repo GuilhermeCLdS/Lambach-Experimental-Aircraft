@@ -38,7 +38,7 @@ def print_design_report(optimizer):
     print(f"AeroBuildup CLa:         {v(optimizer.CLa):.4f} 1/rad")
     print(f"AeroBuildup Cma:         {v(optimizer.Cma):.4f} 1/rad")
     print(f"Nose Superellipse Exp.:  {2}")
-    print(f"Tail Superellipse Exp.:  {v(0.3*d.fuse_len)}")
+    print(f"Tail round parameter.:  {0.3*d.fuse_dia/2}")
 
     print(f"Fuselage cylinder from pylons:      {v(d.l_p - d.cyl_start) * 1000:.1f} mm")
 
