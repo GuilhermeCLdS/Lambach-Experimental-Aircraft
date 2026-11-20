@@ -65,7 +65,7 @@ class Assumptions():
         # ------------------------------------------------- Fixed aircraft parameters
         # Flight conditions
         self.velocity = 200 / 3.6              # [m/s] 200 km/h design (max) speed
-        self.static_margin_frac = 0.02         # (x_np - x_cg) / fuse_len
+        self.static_margin_frac = 0.0         # (x_np - x_cg) / fuse_len
         self.alpha_stall_deg = 10.0            # [deg] local surface incidence guard
         self.prop_axis_max_deg = 12.0          # [deg] prop axis to freestream
 
@@ -101,6 +101,7 @@ class Assumptions():
         self.prop_clearance_gap = 0.01         # [m] prop tip to fuselage
         self.tail_margin = 0.03                # [m] pylon TE to fuselage tail
         self.canard_cg_gap = 0.02              # [m] canard AC ahead of CG TODO: should be removed, has already been in optimizer branch
+        self.min_cyl_to_pylon = 0.165
 
         # ------------------------------------------------- Optimization switches (used by optimizer modules)
         self.use_canards = True                # [-] Enable canard surfaces

@@ -40,6 +40,7 @@ class AircraftAerodynamics:
         self.canard_le = design.l_c - 0.25 * design.canard_chord
         self.pylon_le = design.l_p - 0.25 * design.pylon_chord
         self.pylon_le_TE = design.l_p + 0.75 * design.pylon_chord  
+        self.cyl_start = design.cyl_start
 
     @staticmethod
     def aero_surface(name, root_chord, tip_chord, twist_deg, y_root, z_root, y_tip, z_tip, AIRFOIL):
@@ -100,11 +101,11 @@ class AircraftAerodynamics:
                     #the droplet-shape part of the fuselage goes from the start to the start of the canards, this is because the larger the droplet-shaped part the more aerodynamic will be the fuselagea and therefore less drag
                     #the canards are therefore the constraint and impose the maximum length of the nose
                     xsecs = [
-                        asb.FuselageXSec(xyz_c=[-self.a + self.canard_le * (1 - np.cos(b)), 0, 0], radius=self.b * (1 - ((self.canard_le * (1 - np.cos(b)) - self.canard_le) / self.canard_le) ** 2) ** (1 / n)
+                        asb.FuselageXSec(xyz_c=[-self.a + self.cyl_start * (1 - np.cos(b)) - 0.03, 0, 0], radius=self.b * (1 - ((self.canard_le * (1 - np.cos(b)) - self.canard_le) / self.canard_le) ** 2) ** (1 / n)
                         )
                         for b in beta1
                     ] + [
-                        asb.FuselageXSec(xyz_c=[-self.a + self.canard_le, 0, 0], radius=self.b)
+                        asb.FuselageXSec(xyz_c=[-self.a + self.cyl_start, 0, 0], radius=self.b)
                     ] + [
                         asb.FuselageXSec(xyz_c=[-self.a + np.maximum(self.pylon_le_TE, self.design.l_p + 0.04), 0, 0], radius=self.b)
                     ] + [

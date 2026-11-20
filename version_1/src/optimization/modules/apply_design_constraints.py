@@ -50,10 +50,13 @@ def apply_design_constraints(optimizer):
 
     # Longitudinal layout.
     opti.subject_to(d.l_p + 0.75 * d.pylon_chord + asm.tail_margin <= d.fuse_len)
+    #opti.subject_to(d.l_p - d.cyl_start >= asm.min_cyl_to_pylon)
     if asm.use_canards:
         opti.subject_to(d.l_c + 0.75 * d.canard_chord <= d.l_p - 0.25 * d.pylon_chord)
-        #opti.subject_to(d.l_c + asm.canard_cg_gap <= d.l_cg)
         opti.subject_to(d.l_c - 0.25 * d.canard_chord >= 0)
+        #opti.subject_to(d.cyl_start <= d.l_c - 0.25 * d.canard_chord)
+
+    opti.subject_to(d.l_p - d.cyl_start >= d.l_p - d.l_c + 0.095 + 0.03)
 
     # Thrust balance along the freestream.
     if asm.steady_level:

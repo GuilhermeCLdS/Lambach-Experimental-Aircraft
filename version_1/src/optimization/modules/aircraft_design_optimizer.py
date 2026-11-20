@@ -13,7 +13,7 @@ from src.optimization.modules.mass_cg_calc import MassProperties
 
 SOLVED_DESIGN_KEYS = (
     "AOA", "fuse_len", "fuse_dia", "pylon_len", "pylon_chord", "pylon_inc",
-    "canard_len", "canard_chord", "canard_inc", "l_p", "l_c", "l_cg",
+    "canard_len", "canard_chord", "canard_inc", "l_p", "l_c", "l_cg", "cyl_start"
 )
 
 
